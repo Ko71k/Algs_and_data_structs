@@ -9,28 +9,11 @@
 */
 
 #include <iostream>
+#include <cassert>
 
-int main() {
-    //length input
-    int big_len;
-    int small_len;
-    std::cin >> big_len;
-    std::cin >> small_len;
-    //memory allocation
-    int* big_array_ptr = (int*) malloc(big_len*sizeof(int));
-    int* small_array_ptr = (int*) malloc(small_len*sizeof(int));
-    //zero length failsafe
-    if ((big_len == 0) || (small_len == 0)) {
-        return 0;
-    }
-    //array input
-    for (int i = 0; i < big_len; i++) {
-        std::cin >> big_array_ptr[i];
-    }
-    for (int i = 0; i < small_len; i++) {
-        std::cin >> small_array_ptr[i];
-    }
+int intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer) {
     //counter init
+    int answer_counter = 0;
     int lower_index = 0;
     int upper_index = big_len - 1;
     int mid = 0;
@@ -50,14 +33,50 @@ int main() {
         }
         //binary search done, lower_index is the result
         if (small_array_ptr[i] == big_array_ptr[lower_index]) {
-            if (i>0) {
-                std::cout << " ";
-            }
-            std::cout << small_array_ptr[i];
+            answer[answer_counter] = small_array_ptr[i];
+            answer_counter++;
         }
         upper_index = big_len - 1;
     }
+    //return answer length
+    return answer_counter;
+}
+
+int main() {
+    //length input
+    int first_len;
+    int second_len;
+    std::cin >> first_len;
+    std::cin >> second_len;
+    //zero length assertion
+    assert(!(first_len == 0) || (second_len == 0));
+
+    //memory allocation
+    int* first_array_ptr = (int*) malloc(first_len*sizeof(int));
+    int* second_array_ptr = (int*) malloc(second_len*sizeof(int));
+    int* answer = (int*) malloc(second_len*sizeof(int));
+
+    //arrays input
+    for (int i = 0; i < first_len; i++) {
+        std::cin >> first_array_ptr[i];
+    }
+    for (int i = 0; i < second_len; i++) {
+        std::cin >> second_array_ptr[i];
+    }
+
+    //function call
+    int answer_len = intersection(first_array_ptr, first_len, second_array_ptr, second_len, answer);
+    
+    //output
+    if (answer_len > 0) {
+        std::cout << answer[0];
+    }
+    for (int i = 1; i < answer_len; i++) {
+        std::cout << " " << answer[i];
+    }
+
     //free memory
-    free(small_array_ptr);
-    free(big_array_ptr);
+    free(first_array_ptr);
+    free(second_array_ptr);
+    free(answer);
 }
