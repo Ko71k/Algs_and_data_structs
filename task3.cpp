@@ -78,12 +78,20 @@ private:
     Stack *Giver;
 public:
     Queue(Stack first, Stack Second);
+    Queue();
     ~Queue();
 
     void Enqueue(int data);
     int Dequeue();
     void Flip();
 };
+
+Queue::Queue()
+{
+    Stack Reciever_Base, Giver_Base;
+    Reciever = &Reciever_Base;
+    Giver = &Giver_Base;
+}
 
 Queue::Queue(Stack first, Stack Second) 
 {
@@ -139,6 +147,7 @@ int main()
 
     Stack first, second;
 
+    //Queue myqueue;
     Queue myqueue(first, second);
 
     for (int i = 0; i < n; i++)
@@ -148,7 +157,7 @@ int main()
         switch (a)
         {
         case 2:
-            if (myqueue.Dequeue() == b)
+            if (myqueue.Dequeue() != b)
             {
                 answer = false;
             }
@@ -168,6 +177,7 @@ int main()
     {
         std::cout << "NO";
     }
+    myqueue.~Queue();
     first.~Stack();
     second.~Stack();
 }
