@@ -101,11 +101,8 @@ Queue::Queue(Stack first, Stack Second)
 
 Queue::~Queue()
 {
-    while (!(Reciever->IsEmpty() && Giver->IsEmpty()))
-    {
-        Dequeue();
-    }
-    
+    Reciever->~Stack();
+    Giver->~Stack();    
 }
 
 void Queue::Enqueue(int data)
