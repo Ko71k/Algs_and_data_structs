@@ -33,11 +33,16 @@ Stack::Stack(): top(nullptr)
 
 Stack::~Stack()
 {
+    while (!IsEmpty())
+    {
+        Pop();
+    }
+    
 }
 
 bool Stack::IsEmpty()
 {
-    return top == nullptr;
+    return (top == nullptr);
 }
 
 void Stack::Push(int data)
@@ -69,17 +74,100 @@ int Stack::Pop()
 class Queue
 {
 private:
-    Node *PopReciever;
-    Node *PushReciever;
+    Stack *Reciever;
+    Stack *Giver;
 public:
-    Queue();
+    Queue(Stack first, Stack Second);
     ~Queue();
+
+    void Enqueue(int data);
+    int Dequeue();
+    void Flip();
 };
 
-Queue::Queue(/* args */)
+Queue::Queue(Stack first, Stack Second) 
 {
+    Reciever = &first;
+    Giver = &Second;
 }
 
 Queue::~Queue()
 {
+    while (!(Reciever->IsEmpty() && Giver->IsEmpty()))
+    {
+        Dequeue();
+    }
+    
+}
+
+void Queue::Enqueue(int data)
+{
+    Reciever->Push(data);
+}
+
+int Queue::Dequeue()
+{
+    if (!Giver->IsEmpty())
+    {
+        return Giver->Pop();
+    }
+    else
+    {
+        if (!Reciever->IsEmpty())
+        {
+            Flip();
+            return Giver->Pop();
+        } 
+    }
+    return -1;  
+}
+
+void Queue::Flip()
+{
+    while (!Reciever->IsEmpty())
+    {
+        Giver->Push(Reciever->Pop());
+    }    
+}
+
+int main()
+{
+    int n = 0;
+    std::cin >> n;
+    int a, b = 0;
+    bool answer = true;
+
+    Stack first, second;
+
+    Queue myqueue(first, second);
+
+    for (int i = 0; i < n; i++)
+    {
+        std::cin >> a;
+        std::cin >> b;
+        switch (a)
+        {
+        case 2:
+            if (myqueue.Dequeue() == b)
+            {
+                answer = false;
+            }
+            break;
+        case 3:
+            myqueue.Enqueue(b);
+            break;
+        default:
+            break;
+        }
+    }
+    if (answer)
+    {
+        std::cout << "YES";
+    }
+    else
+    {
+        std::cout << "NO";
+    }
+    first.~Stack();
+    second.~Stack();
 }
