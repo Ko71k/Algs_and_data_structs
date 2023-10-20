@@ -48,7 +48,7 @@ bool Stack::IsEmpty()
 void Stack::Push(int data)
 {
     Node *node = new Node(data);
-    if (IsEmpty())
+    if (this->IsEmpty())
     {
         top = node;
         return;
@@ -70,14 +70,12 @@ int Stack::Pop()
     return tmpData;
 }
 
-
 class Queue
 {
 private:
-    Stack *Reciever;
-    Stack *Giver;
+    Stack Reciever;
+    Stack Giver;
 public:
-    Queue(Stack first, Stack Second);
     Queue();
     ~Queue();
 
@@ -88,51 +86,62 @@ public:
 
 Queue::Queue()
 {
-    Stack Reciever_Base, Giver_Base;
-    Reciever = &Reciever_Base;
-    Giver = &Giver_Base;
-}
-
-Queue::Queue(Stack first, Stack Second) 
-{
-    Reciever = &first;
-    Giver = &Second;
+    Reciever = Stack();
+    Giver = Stack();
 }
 
 Queue::~Queue()
 {
-    Reciever->~Stack();
-    Giver->~Stack();    
+    Reciever.~Stack();
+    Giver.~Stack();
+    // if (Reciever->IsEmpty())
+    // {
+    //     delete Reciever;
+    // }
+    // else
+    // {
+    //     Reciever->~Stack();
+    //     delete Reciever;
+    // }
+    // if (Giver->IsEmpty())
+    // {
+    //     delete Giver;
+    // }
+    // else
+    // {
+    //     Giver->~Stack(); 
+    //     delete Giver;
+    // }
 }
 
 void Queue::Enqueue(int data)
 {
-    Reciever->Push(data);
+    Reciever.Push(data);
 }
 
 int Queue::Dequeue()
 {
-    if (!Giver->IsEmpty())
+    if (!Giver.IsEmpty())
     {
-        return Giver->Pop();
+        return Giver.Pop();
     }
     else
     {
-        if (!Reciever->IsEmpty())
+        if (!Reciever.IsEmpty())
         {
             Flip();
-            return Giver->Pop();
-        } 
+            return Giver.Pop();
+        }
     }
-    return -1;  
+    return -1;
 }
 
 void Queue::Flip()
 {
-    while (!Reciever->IsEmpty())
+    while (!Reciever.IsEmpty())
     {
-        Giver->Push(Reciever->Pop());
-    }    
+        Giver.Push(Reciever.Pop());
+    }
 }
 
 int main()
@@ -140,13 +149,9 @@ int main()
     int n = 0;
     std::cin >> n;
     int a, b = 0;
+
     bool answer = true;
-
-    Stack first, second;
-
-    //Queue myqueue;
-    Queue myqueue(first, second);
-
+    Queue myqueue = Queue();
     for (int i = 0; i < n; i++)
     {
         std::cin >> a;
@@ -175,6 +180,4 @@ int main()
         std::cout << "NO";
     }
     myqueue.~Queue();
-    first.~Stack();
-    second.~Stack();
 }
