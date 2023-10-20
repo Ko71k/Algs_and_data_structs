@@ -94,24 +94,6 @@ Queue::~Queue()
 {
     Reciever.~Stack();
     Giver.~Stack();
-    // if (Reciever->IsEmpty())
-    // {
-    //     delete Reciever;
-    // }
-    // else
-    // {
-    //     Reciever->~Stack();
-    //     delete Reciever;
-    // }
-    // if (Giver->IsEmpty())
-    // {
-    //     delete Giver;
-    // }
-    // else
-    // {
-    //     Giver->~Stack(); 
-    //     delete Giver;
-    // }
 }
 
 void Queue::Enqueue(int data)
