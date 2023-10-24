@@ -23,11 +23,18 @@ int Intersection_new(int* big_array_ptr, int big_len, int* small_array_ptr, int 
     {
         //exponential search
         int bound = 1;
-        while ((upper_index + 2*bound < big_len) && (big_array_ptr[upper_index + bound] < small_array_ptr[i]))
+        while ((upper_index + bound < big_len) && (big_array_ptr[upper_index + bound] < small_array_ptr[i]))
         {
             bound *= 2;
         }
-        upper_index += bound;
+        if (upper_index + bound > big_len)
+        {
+            upper_index = big_len - 1;
+        }
+        else 
+        {
+            upper_index += bound;
+        }
         //binary search
         while (lower_index < upper_index) {
             mid = (lower_index + upper_index) / 2;
