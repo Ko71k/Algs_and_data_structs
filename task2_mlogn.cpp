@@ -11,14 +11,52 @@
 #include <iostream>
 #include <cassert>
 
-int intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer) {
+int Intersection_new(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer)
+{
+    //cannot split binary and exponential search into separate functions, because of
+    //too many arguments
+    int answer_counter = 0;
+    int lower_index = 0;
+    int upper_index = 0;
+    int mid = 0;
+    for (int i = 0; i < small_len; i++)
+    {
+        //exponential search
+        int bound = 1;
+        while ((upper_index + 2*bound < big_len) && (big_array_ptr[upper_index + bound] < small_array_ptr[i]))
+        {
+            bound *= 2;
+        }
+        upper_index += bound;
+        //binary search
+        while (lower_index < upper_index) {
+            mid = (lower_index + upper_index) / 2;
+            if (big_array_ptr[mid] < small_array_ptr[i]) {
+                lower_index = mid + 1;
+            }
+            else {
+                upper_index = mid;
+            }
+        }
+        //binary search done, lower_index is the result
+        //checking if found element is equal (then add to answer) or greater (then ignore)
+        if (small_array_ptr[i] == big_array_ptr[lower_index]) {
+            answer[answer_counter] = small_array_ptr[i];
+            answer_counter++;
+        }
+    }
+    return answer_counter;
+}
+
+int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer) {
     //counter init
     int answer_counter = 0;
     int lower_index = 0;
     int upper_index = big_len - 1;
     int mid = 0;
     //main cycle
-    for (int i = 0; i < small_len; i++) {
+    for (int i = 0; i < small_len; i++) 
+    {
         //binary search, 
         //lower_index is 0 or last step's result
         //upper_index is big_len - 1
@@ -65,8 +103,8 @@ int main() {
     }
 
     //function call
-    int answer_len = intersection(first_array_ptr, first_len, second_array_ptr, second_len, answer);
-    
+    int answer_len = Intersection_new(first_array_ptr, first_len, second_array_ptr, second_len, answer);
+
     //output
     if (answer_len > 0) {
         std::cout << answer[0];
@@ -74,7 +112,6 @@ int main() {
     for (int i = 1; i < answer_len; i++) {
         std::cout << " " << answer[i];
     }
-
     //free memory
     free(first_array_ptr);
     free(second_array_ptr);
