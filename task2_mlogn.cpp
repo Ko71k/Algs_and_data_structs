@@ -11,48 +11,16 @@
 #include <iostream>
 #include <cassert>
 
-int Intersection_new(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer)
+int Minimal(int a, int b)
 {
-    //cannot split binary and exponential search into separate functions, because of
-    //too many arguments
-    int answer_counter = 0;
-    int lower_index = 0;
-    int upper_index = 0;
-    int mid = 0;
-    for (int i = 0; i < small_len; i++)
+    if (a < b)
     {
-        //exponential search
-        int bound = 1;
-        while ((upper_index + bound < big_len) && (big_array_ptr[upper_index + bound] < small_array_ptr[i]))
-        {
-            bound *= 2;
-        }
-        if (upper_index + bound > big_len)
-        {
-            upper_index = big_len - 1;
-        }
-        else 
-        {
-            upper_index += bound;
-        }
-        //binary search
-        while (lower_index < upper_index) {
-            mid = (lower_index + upper_index) / 2;
-            if (big_array_ptr[mid] < small_array_ptr[i]) {
-                lower_index = mid + 1;
-            }
-            else {
-                upper_index = mid;
-            }
-        }
-        //binary search done, lower_index is the result
-        //checking if found element is equal (then add to answer) or greater (then ignore)
-        if (small_array_ptr[i] == big_array_ptr[lower_index]) {
-            answer[answer_counter] = small_array_ptr[i];
-            answer_counter++;
-        }
+        return a;
     }
-    return answer_counter;
+    else
+    {
+        return b;
+    }
 }
 
 int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer) {
@@ -69,7 +37,8 @@ int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int smal
         //upper_index is big_len - 1
         while (lower_index < upper_index) {
             mid = (lower_index + upper_index) / 2;
-            if (big_array_ptr[mid] < small_array_ptr[i]) {
+            if (big_array_ptr[mid] < small_array_ptr[i]) 
+            {
                 lower_index = mid + 1;
             }
             else {
@@ -77,7 +46,8 @@ int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int smal
             }
         }
         //binary search done, lower_index is the result
-        if (small_array_ptr[i] == big_array_ptr[lower_index]) {
+        if (small_array_ptr[i] == big_array_ptr[lower_index])
+        {
             answer[answer_counter] = small_array_ptr[i];
             answer_counter++;
         }
@@ -85,9 +55,60 @@ int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int smal
     }
     //return answer length
     return answer_counter;
+    //down there it is broken down to functions and optimized with exponential search
 }
 
-int main() {
+int Binary_search(int* array_ptr, int value, int lower_index, int upper_index)
+{
+    int mid = 0;
+    while (lower_index < upper_index) {
+            mid = (lower_index + upper_index) / 2;
+            if (array_ptr[mid] < value) 
+            {
+                lower_index = mid + 1;
+            }
+            else {
+                upper_index = mid;
+            }
+        }
+    return lower_index;
+}
+
+int Exponential_search(int * array_ptr, int array_len, int value, int starting_point)
+{   
+    int slider1 = 1;
+    int slider = starting_point + slider;
+    while ((slider < array_len - 1) && (array_ptr[slider] < value))
+    {
+        slider1 *=2;
+        slider = starting_point + slider;
+    }
+    return Binary_search(array_ptr, value, slider/2, Minimal(array_len - 1, slider + 1));
+}
+
+int Intersection_With_Exp(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer) 
+{
+    //counter init
+    int answer_counter = 0;
+    int lower_index = 0;
+    int mid = 0;
+    //main cycle
+    for (int i = 0; i < small_len; i++) 
+    {
+       lower_index = Exponential_search(big_array_ptr, big_len, small_array_ptr[i], lower_index + 1);
+        //binary search done, lower_index is the result
+        if (small_array_ptr[i] == big_array_ptr[lower_index]) 
+        {
+            answer[answer_counter] = small_array_ptr[i];
+            answer_counter++;
+        }
+    }
+    //return answer length
+    return answer_counter;
+}
+
+int main() 
+{
     //length input
     int first_len;
     int second_len;
@@ -102,21 +123,24 @@ int main() {
     int* answer = (int*) malloc(second_len*sizeof(int));
 
     //arrays input
-    for (int i = 0; i < first_len; i++) {
+    for (int i = 0; i < first_len; i++) 
+    {
         std::cin >> first_array_ptr[i];
     }
-    for (int i = 0; i < second_len; i++) {
+    for (int i = 0; i < second_len; i++) 
+    {
         std::cin >> second_array_ptr[i];
     }
 
     //function call
-    int answer_len = Intersection_new(first_array_ptr, first_len, second_array_ptr, second_len, answer);
+    int answer_len = Intersection_With_Exp(first_array_ptr, first_len, second_array_ptr, second_len, answer);
 
     //output
     if (answer_len > 0) {
         std::cout << answer[0];
     }
-    for (int i = 1; i < answer_len; i++) {
+    for (int i = 1; i < answer_len; i++) 
+    {
         std::cout << " " << answer[i];
     }
     //free memory
