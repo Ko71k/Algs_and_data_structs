@@ -23,6 +23,43 @@ int Minimal(int a, int b)
     }
 }
 
+int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer)
+{
+    //counter init
+    int answer_counter = 0;
+    int lower_index = 0;
+    int upper_index = big_len - 1;
+    int mid = 0;
+    //main cycle
+    for (int i = 0; i < small_len; i++) 
+    {
+        //binary search, 
+        //lower_index is 0 or last step's result
+        //upper_index is big_len - 1
+        while (lower_index < upper_index) {
+            mid = (lower_index + upper_index) / 2;
+            if (big_array_ptr[mid] < small_array_ptr[i]) 
+            {
+                lower_index = mid + 1;
+            }
+            else
+            {
+                upper_index = mid;
+            }
+        }
+        //binary search done, lower_index is the result
+        if (small_array_ptr[i] == big_array_ptr[lower_index])
+        {
+            answer[answer_counter] = small_array_ptr[i];
+            answer_counter++;
+        }
+        upper_index = big_len - 1;
+    }
+    //return answer length
+    return answer_counter;
+    //down there it is broken down to functions and optimized with exponential search
+}
+
 int Binary_search(int* array_ptr, int value, int lower_index, int upper_index)
 {
     int mid = 0;
@@ -62,7 +99,7 @@ int Intersection_With_Exp(int* big_array_ptr, int big_len, int* small_array_ptr,
     for (int i = 0; i < small_len; i++) 
     {
         lower_index = Exponential_search(big_array_ptr, big_len, small_array_ptr[i], lower_index + 1);
-        //binary search done, lower_index is the result
+        //binary search done
         if (small_array_ptr[i] == big_array_ptr[lower_index]) 
         {
             answer[answer_counter] = small_array_ptr[i];
