@@ -23,7 +23,8 @@ int Minimal(int a, int b)
     }
 }
 
-int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer) {
+int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int small_len, int* answer)
+{
     //counter init
     int answer_counter = 0;
     int lower_index = 0;
@@ -41,7 +42,8 @@ int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int smal
             {
                 lower_index = mid + 1;
             }
-            else {
+            else
+            {
                 upper_index = mid;
             }
         }
@@ -61,16 +63,18 @@ int Intersection(int* big_array_ptr, int big_len, int* small_array_ptr, int smal
 int Binary_search(int* array_ptr, int value, int lower_index, int upper_index)
 {
     int mid = 0;
-    while (lower_index < upper_index) {
-            mid = (lower_index + upper_index) / 2;
-            if (array_ptr[mid] < value) 
-            {
-                lower_index = mid + 1;
-            }
-            else {
-                upper_index = mid;
-            }
+    while (lower_index < upper_index)
+    {
+        mid = (lower_index + upper_index) / 2;
+        if (array_ptr[mid] < value) 
+        {
+            lower_index = mid + 1;
         }
+        else
+        {
+            upper_index = mid;
+        }
+    }
     return lower_index;
 }
 
@@ -136,7 +140,8 @@ int main()
     int answer_len = Intersection_With_Exp(first_array_ptr, first_len, second_array_ptr, second_len, answer);
 
     //output
-    if (answer_len > 0) {
+    if (answer_len > 0)
+    {
         std::cout << answer[0];
     }
     for (int i = 1; i < answer_len; i++) 
