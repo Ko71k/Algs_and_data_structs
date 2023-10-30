@@ -8,12 +8,14 @@
 */
 #include <iostream>
 
-template <typename T>
+//structure User, got id and times user log on
 struct User
 {
     User(int id, int activity)
     :id(id), activity(activity)
     {
+        this->id = id;
+        this->activity = activity;
     }
     User()
     :id(0), activity(0)
@@ -22,61 +24,129 @@ struct User
     int id;
     int activity;
 };
-template <typename Comparator>
-bool Minimal(int a, int b)
+
+// >> overload for User
+std::istream& operator>>(std::istream &input, User &user)
 {
-    return (a < b);
+    input >> user.id >> user.activity;
+    return input;
 }
 
-template <typename T, typename Comparator>
+// << overload for User
+std::ostream& operator<<(std::ostream &output, const User &user)
+{
+    output << " " << user.id << " " << user.activity << " ";
+    return output;
+}
+
+//Less sign overload for User
+bool operator<(const User &left, const User &right)
+{
+    return left.activity < right.activity;
+}
+
+
+//default comparator
+template <class T>
+struct DefaultComparator
+{
+    bool operator()(const T& left, const T& right) const
+    {
+        return right < left;
+    }
+};
+
+//class heap
+template <class T, class Comp=DefaultComparator<T>>
 class Heap
 {
 private:
-    int SiftUp();
-    int SiftDown();
-    Comparator cmp;
+    T* buf;
+    size_t size;
+    size_t capacity;
+
+    void SiftUp();
+    void SiftDown();
+    void Grow();
 public:
-    int Add();
-    int ExtractTop();
-    int Peek();
+    void Add(T element);
+    T ExtractTop();
+    T Peek();
+
     Heap();
     ~Heap();
 };
 
-int SiftUp()
+
+template <class T, class Comp=DefaultComparator>
+Heap(Comp comp=DefaultComparator>()) -> <Heap, Comp> 
+{
+    comp();
+    this.buf = NULL;
+    this.size = NULL;
+    this.capacity = NULL;
+}
+/*
+template <class T, class Comp=DefaultComparator<T>>
+Heap(Comp comp=DefaultComparator<T>())
+{
+    comp();
+    this.buf = NULL;
+    this.size = NULL;
+    this.capacity = NULL;
+}
+*/
+
+template <class T>
+Heap<T>::~Heap()
+{
+    if (buf != NULL)
+    {
+        delete [] buf;
+    }
+}
+
+template <class T>
+void SiftUp()
 {
 
 }
 
-int SiftDown()
+template <class T>
+void SiftDown()
 {
 
 }
 
-int Add()
+template <class T>
+void Add(T element)
 {
 
 }
-
-int ExtractTop()
+template <class T>
+T ExtractTop()
 {
 
 }
-
-int Peek()
+template <class T>
+T Peek()
 {
 
-}
-
-Heap::Heap(): User, Minimal()
-{
-}
-
-Heap::~Heap()
-{
 }
 
 int main()
 {
+    User a;
+    User b(3, 5);
+    std::cin >> a;
+    if (a<b)
+    {
+        std::cout << "1";
+    }
+    else
+    {
+        std::cout << "2";
+    }
 
+    std::cout << a << b;
 }
