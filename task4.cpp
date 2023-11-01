@@ -48,11 +48,11 @@ bool operator<(const User &left, const User &right)
 
 //default comparator
 template <class T>
-struct DefaultComparator
+class DefaultComparator
 {
     bool operator()(const T& left, const T& right) const
     {
-        return right < left;
+        return left < right;
     }
 };
 
@@ -61,92 +61,148 @@ template <class T, class Comp=DefaultComparator<T>>
 class Heap
 {
 private:
-    T* buf;
-    size_t size;
+    T* heap_pointer;
+    size_t type_size;
+    size_t current;
     size_t capacity;
 
-    void SiftUp();
-    void SiftDown();
-    void Grow();
-public:
-    void Add(T element);
-    T ExtractTop();
-    T Peek();
-
-    Heap();
-    ~Heap();
-};
-
-
-template <class T, class Comp=DefaultComparator>
-Heap(Comp comp=DefaultComparator>()) -> <Heap, Comp> 
-{
-    comp();
-    this.buf = NULL;
-    this.size = NULL;
-    this.capacity = NULL;
-}
-/*
-template <class T, class Comp=DefaultComparator<T>>
-Heap(Comp comp=DefaultComparator<T>())
-{
-    comp();
-    this.buf = NULL;
-    this.size = NULL;
-    this.capacity = NULL;
-}
-*/
-
-template <class T>
-Heap<T>::~Heap()
-{
-    if (buf != NULL)
+    size_t Element(size_t addr)
     {
-        delete [] buf;
+        return addr/type_size;
     }
-}
 
-template <class T>
-void SiftUp()
-{
+    //sifts up the element heap_pointer[index]
+    void SiftUp(size_t index)
+    {
+        if (!Comp(heap_pointer[(index - 1) / 2], heap_pointer[index]))
+        {
+            Swap((index - 1) / 2, index);
+            SiftUp((index - 1) / 2);
+        }
+        return;
+    };
 
-}
+    //sifts down the element heap_pointer[index]
+    void SiftDown(size_t index)
+    {
+        if (index * 2 >= current)
+        {
+            size_t better_child, worse_child;
+            if (Comp(heap_pointer[index * 2 + 1], heap_pointer[index * 2 + 1]))
+            {
+                better_child = index * 2 + 1;
+                worse_child = index * 2 + 2;
+            }
+            else
+            {
+                better_child = index * 2 + 2;
+                worse_child = index * 2 + 1;
+            }
 
-template <class T>
-void SiftDown()
-{
+            if (!Comp(heap_pointer[index], heap_pointer[better_child]))
+            {
+                Swap(index, better_child);
+                SiftDown(better_child);
+            }
+            else if (!Comp(heap_pointer[index], heap_pointer[worse_child]))
+            {
+                Swap(index, worse_child);
+                SiftDown(worse_child);
+            }
+        }
+        return;
+    };
 
-}
+    void Swap(size_t first, size_t second)
+    {
+        T tmp = heap_pointer[first];
+        heap_pointer[first] = heap_pointer[second];
+        heap_pointer[second] = tmp;
+    }
+    
+    void Grow()
+    {
+        T* new_heap = (T *) malloc(current*sizeof(T)*2);
+        for (int i = 0; i++; i < current)
+        {
+            new_heap[i] = heap_pointer[i];
+        }
+        T* tmp = heap_pointer;
+        capacity *= 2;
+        heap_pointer = new_heap;
+        free(tmp);
+    };
+public:
+    //Adds an element to the end, then sifts it up
+    void Add(T element)
+    {
+        if (current + 1 > capacity)
+        {
+            Grow();
+        }
+        heap_pointer[current+1] = element;
+        SiftUp(current+1);
+        return;
+    };
 
-template <class T>
-void Add(T element)
-{
+    //Swaps the bottom with the top, sifts up the top, deletes the bottom
+    //to do: shrinking if current <= capacity / 2
+    T ExtractTop()
+    {
+        T tmp = this->heap_pointer[0];
+        Swap(0, capacity);
+        SiftDown(0);
+        current--;
+        return tmp;
+    };
 
-}
-template <class T>
-T ExtractTop()
-{
+    //returns the current top element without extracting it
+    T Peek()
+    {
+        return this->heap_pointer[0];
+    };
+    
+    //to do
+    T* Heapify()
+    {
 
-}
-template <class T>
-T Peek()
-{
+    };
 
-}
+    //constructor
+    Heap(T, Comp comp=DefaultComparator<T>()): heap_pointer(nullptr)
+    {
+        capacity = 0;
+        current = 0;
+        type_size = sizeof(T);
+    };
+
+    Heap()
+    {
+        heap_pointer = nullptr;
+        capacity = 0;
+        current = 0;
+        type_size = sizeof(int);
+    }
+
+    ~Heap() 
+    {
+        if (heap_pointer != nullptr)
+        {
+            free(heap_pointer);
+            //delete [] heap_pointer;
+        }
+    }
+};
 
 int main()
 {
-    User a;
-    User b(3, 5);
-    std::cin >> a;
-    if (a<b)
-    {
-        std::cout << "1";
-    }
-    else
-    {
-        std::cout << "2";
-    }
-
-    std::cout << a << b;
+    std::cout << "lol" << std::endl;
+    User myuser;
+    Heap <User>myheap;
+    myheap.Add(myuser);
+    std::cout << myheap.Peek();
 }
+
+    // Heap <int>myheap;
+    // myheap.Add(10);
+    // std::cout << myheap.Peek();
