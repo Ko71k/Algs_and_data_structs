@@ -48,7 +48,7 @@ bool operator<(const User &left, const User &right)
 
 //default comparator
 template <class T>
-class DefaultComparator
+struct DefaultComparator
 {
     bool operator()(const T& left, const T& right) const
     {
@@ -61,10 +61,11 @@ template <class T, class Comp=DefaultComparator<T>>
 class Heap
 {
 private:
+    Comp comp;
     T* heap_pointer;
-    size_t type_size;
-    size_t current;
-    size_t capacity;
+    int type_size;
+    int current;
+    int capacity;
 
     size_t Element(size_t addr)
     {
@@ -74,7 +75,7 @@ private:
     //sifts up the element heap_pointer[index]
     void SiftUp(size_t index)
     {
-        if (!Comp(heap_pointer[(index - 1) / 2], heap_pointer[index]))
+        if (!comp(heap_pointer[(index - 1) / 2], heap_pointer[index]))
         {
             Swap((index - 1) / 2, index);
             SiftUp((index - 1) / 2);
@@ -88,7 +89,7 @@ private:
         if (index * 2 >= current)
         {
             size_t better_child, worse_child;
-            if (Comp(heap_pointer[index * 2 + 1], heap_pointer[index * 2 + 1]))
+            if (comp(heap_pointer[index * 2 + 1], heap_pointer[index * 2 + 1]))
             {
                 better_child = index * 2 + 1;
                 worse_child = index * 2 + 2;
@@ -99,12 +100,12 @@ private:
                 worse_child = index * 2 + 1;
             }
 
-            if (!Comp(heap_pointer[index], heap_pointer[better_child]))
+            if (!comp(heap_pointer[index], heap_pointer[better_child]))
             {
                 Swap(index, better_child);
                 SiftDown(better_child);
             }
-            else if (!Comp(heap_pointer[index], heap_pointer[worse_child]))
+            else if (!comp(heap_pointer[index], heap_pointer[worse_child]))
             {
                 Swap(index, worse_child);
                 SiftDown(worse_child);
@@ -122,15 +123,15 @@ private:
     
     void Grow()
     {
-        T* new_heap = (T *) malloc(current*sizeof(T)*2);
-        for (int i = 0; i++; i < current)
+        T* new_heap = (T *) new T[current*2];
+        for (int i = 0; i < current; i++)
         {
             new_heap[i] = heap_pointer[i];
         }
         T* tmp = heap_pointer;
         capacity *= 2;
         heap_pointer = new_heap;
-        free(tmp);
+        delete tmp;
     };
 public:
     //Adds an element to the end, then sifts it up
@@ -140,8 +141,9 @@ public:
         {
             Grow();
         }
-        heap_pointer[current+1] = element;
-        SiftUp(current+1);
+        heap_pointer[current] = element;
+        SiftUp(current);
+        current++;
         return;
     };
 
@@ -161,6 +163,15 @@ public:
     {
         return this->heap_pointer[0];
     };
+
+    int Printer()
+    {
+        for (int i = 0; i < current; i++)
+        {
+            std::cout << heap_pointer[i] << std::endl;
+        }
+        return current;
+    }
     
     //to do
     T* Heapify()
@@ -169,40 +180,36 @@ public:
     };
 
     //constructor
-    Heap(T, Comp comp=DefaultComparator<T>()): heap_pointer(nullptr)
+    Heap(T a, Comp comp=DefaultComparator<T>())
     {
-        capacity = 0;
-        current = 0;
+        heap_pointer = new T[1];
+        heap_pointer[0] = a;
+        capacity = 1;
+        current = 1;
         type_size = sizeof(T);
     };
 
-    Heap()
+    ~Heap()
     {
-        heap_pointer = nullptr;
-        capacity = 0;
-        current = 0;
-        type_size = sizeof(int);
+        delete heap_pointer;
     }
-
-    ~Heap() 
-    {
-        if (heap_pointer != nullptr)
-        {
-            free(heap_pointer);
-            //delete [] heap_pointer;
-        }
-    }
+    // ~Heap() 
+    // {
+    //     if (heap_pointer != nullptr)
+    //     {
+    //         delete
+    //         //delete [] heap_pointer;
+    //     }
+    // }
 };
 
 int main()
 {
-    std::cout << "lol" << std::endl;
-    User myuser;
-    Heap <User>myheap;
-    myheap.Add(myuser);
-    std::cout << myheap.Peek();
+    User myuser1(1,2), myuser2(2,3);
+    Heap <User>myheap(myuser1);
+    std::cout << myheap.Peek() << std::endl;
+    myheap.Add(myuser2);
+    std::cout << myheap.Peek() << std::endl;
+    // std::cout << "Printer: \n";
+    // myheap.Printer();
 }
-
-    // Heap <int>myheap;
-    // myheap.Add(10);
-    // std::cout << myheap.Peek();
