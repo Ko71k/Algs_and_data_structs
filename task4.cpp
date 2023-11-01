@@ -151,7 +151,7 @@ public:
     //to do: shrinking if current <= capacity / 2
     T ExtractTop()
     {
-        T tmp = this->heap_pointer[0];
+        T tmp = heap_pointer[0];
         Swap(0, capacity);
         SiftDown(0);
         current--;
@@ -172,6 +172,15 @@ public:
         }
         return current;
     }
+    int Printer2()
+    {
+        for (int i = 0; i < current; i++)
+        {
+            std::cout << heap_pointer[i].id << " ";
+        }
+        return current;
+    }
+    
     
     //to do
     T* Heapify()
@@ -203,13 +212,38 @@ public:
     // }
 };
 
+// int main2()
+// {
+//     User myuser1(1,2), myuser2(2,3);
+//     Heap <User>myheap(myuser1);
+//     std::cout << myheap.Peek() << std::endl;
+//     myheap.Add(myuser2);
+//     std::cout << myheap.Peek() << std::endl;
+//     // std::cout << "Printer: \n";
+//     // myheap.Printer();
+// }
+
 int main()
 {
-    User myuser1(1,2), myuser2(2,3);
-    Heap <User>myheap(myuser1);
-    std::cout << myheap.Peek() << std::endl;
-    myheap.Add(myuser2);
-    std::cout << myheap.Peek() << std::endl;
-    // std::cout << "Printer: \n";
-    // myheap.Printer();
+    int N, K;
+    std::cin >> N;
+    std::cin >> K;
+    int id, activity;
+    User proto;
+    Heap <User>pudge(proto);
+
+
+    std::cout<< "The N: " << N << " The K: " << K << std::endl;
+
+
+    for (int i = 0; i < N; i++)
+    {
+        std::cout<< "Waiting: ";
+        std::cin >> id >> activity;
+        User newcomer(id, activity);
+        pudge.Add(newcomer);
+    }
+    pudge.ExtractTop();
+    pudge.Printer2();
+    pudge.~Heap();
 }
