@@ -152,7 +152,7 @@ public:
     T ExtractTop()
     {
         T tmp = heap_pointer[0];
-        Swap(0, capacity);
+        Swap(0, current - 1);
         SiftDown(0);
         current--;
         return tmp;
@@ -164,21 +164,23 @@ public:
         return this->heap_pointer[0];
     };
 
-    int Printer()
+    void Printer()
     {
+        
+        std::cout << "Current is: " << current << " Capacity is: " << capacity << std::endl;
         for (int i = 0; i < current; i++)
         {
-            std::cout << heap_pointer[i] << std::endl;
+            std::cout << "The " << i << " element is: " << heap_pointer[i] << std::endl;
         }
-        return current;
+        return;
     }
-    int Printer2()
+    void Printer2()
     {
         for (int i = 0; i < current; i++)
         {
             std::cout << heap_pointer[i].id << " ";
         }
-        return current;
+        return;
     }
     
     
@@ -202,26 +204,7 @@ public:
     {
         delete heap_pointer;
     }
-    // ~Heap() 
-    // {
-    //     if (heap_pointer != nullptr)
-    //     {
-    //         delete
-    //         //delete [] heap_pointer;
-    //     }
-    // }
 };
-
-// int main2()
-// {
-//     User myuser1(1,2), myuser2(2,3);
-//     Heap <User>myheap(myuser1);
-//     std::cout << myheap.Peek() << std::endl;
-//     myheap.Add(myuser2);
-//     std::cout << myheap.Peek() << std::endl;
-//     // std::cout << "Printer: \n";
-//     // myheap.Printer();
-// }
 
 int main()
 {
@@ -229,21 +212,18 @@ int main()
     std::cin >> N;
     std::cin >> K;
     int id, activity;
-    User proto;
+    std::cin >> id >> activity;
+    User proto(id, activity); 
     Heap <User>pudge(proto);
-
-
-    std::cout<< "The N: " << N << " The K: " << K << std::endl;
-
-
-    for (int i = 0; i < N; i++)
+    for (int i = 1; i < N; i++)
     {
-        std::cout<< "Waiting: ";
         std::cin >> id >> activity;
         User newcomer(id, activity);
         pudge.Add(newcomer);
     }
-    pudge.ExtractTop();
-    pudge.Printer2();
-    pudge.~Heap();
+    for (int i = 0; i < K; i++)
+    {
+        std::cout << pudge.ExtractTop().id << " ";
+    }
+    //pudge.~Heap();
 }
