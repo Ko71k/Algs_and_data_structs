@@ -67,75 +67,48 @@ private:
     int current;
     int capacity;
 
-    size_t Element(size_t addr)
+    //sifts the index element to the top (or till it stops climbing)
+    void SiftUp(int index)
     {
-        return addr/type_size;
+        int parent = 0;
+        while (index > 0)
+        {
+            parent = (index - 1) / 2;
+            if (comp(heap_pointer[index], heap_pointer[parent]))
+            {
+                Swap(parent, index);
+                index = parent;
+            }
+            else 
+            {
+                break;
+            }
+        }
+        
     }
 
-    //sifts up the element heap_pointer[index]
-    void SiftUp(size_t index)
-    {
-        if (!comp(heap_pointer[(index - 1) / 2], heap_pointer[index]))
-        {
-            Swap((index - 1) / 2, index);
-            if (index - 1 == 0)
-            {
-                return;
-            }
-            SiftUp((index - 1) / 2);
-        }
-        return;
-    };
-
     //sifts down the element heap_pointer[index]
-    void SiftDown(size_t index)
+    void SiftDown(int index)
     {
-        if (current == 0)
+        int l_child = index * 2 + 1;
+        int r_child = index * 2 + 2;
+        int best = index;
+        if (comp(heap_pointer[l_child], heap_pointer[best]) && (l_child < current))
         {
-            return;
+            best = l_child;
         }
-        //1 child case
-        if (index * 2 + 1 == current - 1)
+        if (comp(heap_pointer[r_child], heap_pointer[best]) && (r_child < current))
         {
-            if (!comp(heap_pointer[index], heap_pointer[index * 2 + 1]))
-            {
-                Swap(index, index * 2 + 1);
-            }
-            return;
+            best = r_child;
         }
-        //2 children case
-        if (index * 2 + 2 <= current - 1)
+        if (best != index)
         {
-            //determining which of the children is better to swap with
-            size_t better_child, worse_child;
-            if (comp(heap_pointer[index * 2 + 1], heap_pointer[index * 2 + 2]))
-            {
-                better_child = index * 2 + 1;
-                worse_child = index * 2 + 2;
-            }
-            else
-            {
-                better_child = index * 2 + 2;
-                worse_child = index * 2 + 1;
-            }
-            if (!comp(heap_pointer[index], heap_pointer[better_child]))
-            {
-                Swap(index, better_child);
-                SiftDown(better_child);
-                return;
-            }
-            else if (!comp(heap_pointer[index], heap_pointer[worse_child]))
-            {
-                Swap(index, worse_child);
-                SiftDown(worse_child);
-                return;
-            }
-            return;
+            Swap(index, best);
+            SiftDown(best);
         }
-        return;
-    };
+    }
 
-    void Swap(size_t first, size_t second)
+    void Swap(int first, int second)
     {
         T tmp = heap_pointer[first];
         heap_pointer[first] = heap_pointer[second];
@@ -201,7 +174,6 @@ public:
 
     void Printer_Tree()
     {
-        return;
         std::cout << "Current is: " << current << " Capacity is: " << capacity << std::endl;
         switch (current)
         {
@@ -240,7 +212,7 @@ public:
     //to do
     T* Heapify()
     {
-
+        
     };
 
     //constructor
@@ -273,9 +245,17 @@ int main()
         std::cin >> id >> activity;
         User newcomer(id, activity);
         pudge.Add(newcomer);
-        pudge.Printer_Tree();
     }
-    for (int i = 0; i < K; i++)
+    if (N < K)
+    {
+        K = N;
+        for (int i = 0; i <N; i++)
+        {
+            std::cout << pudge.ExtractTop().id << " ";
+        }
+        return 0;
+    }
+    for (int i = 0; i <K; i++)
     {
         std::cout << pudge.ExtractTop().id << " ";
     }
