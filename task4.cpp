@@ -78,6 +78,10 @@ private:
         if (!comp(heap_pointer[(index - 1) / 2], heap_pointer[index]))
         {
             Swap((index - 1) / 2, index);
+            if (index - 1 == 0)
+            {
+                return;
+            }
             SiftUp((index - 1) / 2);
         }
         return;
@@ -86,10 +90,25 @@ private:
     //sifts down the element heap_pointer[index]
     void SiftDown(size_t index)
     {
-        if (index * 2 >= current)
+        if (current == 0)
         {
+            return;
+        }
+        //1 child case
+        if (index * 2 + 1 == current - 1)
+        {
+            if (!comp(heap_pointer[index], heap_pointer[index * 2 + 1]))
+            {
+                Swap(index, index * 2 + 1);
+            }
+            return;
+        }
+        //2 children case
+        if (index * 2 + 2 <= current - 1)
+        {
+            //determining which of the children is better to swap with
             size_t better_child, worse_child;
-            if (comp(heap_pointer[index * 2 + 1], heap_pointer[index * 2 + 1]))
+            if (comp(heap_pointer[index * 2 + 1], heap_pointer[index * 2 + 2]))
             {
                 better_child = index * 2 + 1;
                 worse_child = index * 2 + 2;
@@ -99,17 +118,19 @@ private:
                 better_child = index * 2 + 2;
                 worse_child = index * 2 + 1;
             }
-
             if (!comp(heap_pointer[index], heap_pointer[better_child]))
             {
                 Swap(index, better_child);
                 SiftDown(better_child);
+                return;
             }
             else if (!comp(heap_pointer[index], heap_pointer[worse_child]))
             {
                 Swap(index, worse_child);
                 SiftDown(worse_child);
+                return;
             }
+            return;
         }
         return;
     };
@@ -137,12 +158,15 @@ public:
     //Adds an element to the end, then sifts it up
     void Add(T element)
     {
-        if (current + 1 > capacity)
+        if (current == capacity)
         {
             Grow();
         }
         heap_pointer[current] = element;
-        SiftUp(current);
+        if (current != 0)
+        {
+            SiftUp(current);
+        }
         current++;
         return;
     };
@@ -153,8 +177,8 @@ public:
     {
         T tmp = heap_pointer[0];
         Swap(0, current - 1);
-        SiftDown(0);
         current--;
+        SiftDown(0);
         return tmp;
     };
 
@@ -174,15 +198,44 @@ public:
         }
         return;
     }
-    void Printer2()
+
+    void Printer_Tree()
     {
-        for (int i = 0; i < current; i++)
-        {
-            std::cout << heap_pointer[i].id << " ";
-        }
         return;
+        std::cout << "Current is: " << current << " Capacity is: " << capacity << std::endl;
+        switch (current)
+        {
+        case 7 ... 14:
+        {
+            for (int i = 7; i < 14; i++)
+            {
+                std::cout << heap_pointer[i] << "   ";
+            }
+            std::cout << std::endl;
+        }
+        case 3 ... 6:
+        {
+            for (int i = 3; i < current; i++)
+            {
+                std::cout << heap_pointer[i] << "   ";
+            }
+            std::cout << std::endl;
+        }
+        case 1 ... 2:
+        {
+            std::cout << "      ";
+            for (int i = 1; i < 3; i++)
+            {
+                std::cout << heap_pointer[i] << "   ";
+            }
+            std::cout << std::endl;
+        }
+        default:
+            std::cout << "       HEAD: " << heap_pointer[0];
+            std::cout << std::endl;
+            break;
+        }
     }
-    
     
     //to do
     T* Heapify()
@@ -220,6 +273,7 @@ int main()
         std::cin >> id >> activity;
         User newcomer(id, activity);
         pudge.Add(newcomer);
+        pudge.Printer_Tree();
     }
     for (int i = 0; i < K; i++)
     {
