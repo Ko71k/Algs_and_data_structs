@@ -1,20 +1,29 @@
+/*
+Дан массив строк. Количество строк не больше 100000.
+Отсортировать массив методом поразрядной сортировки MSD по символам. 
+Размер алфавита - 256 символов. Последний символ строки = ‘\0’.
+*/
+
 #include <iostream>
 using std::string;
 const int k = 256;
 
-void countingSort(string * str, int n, int * c, int byte){
+void countingSort(string * str, int n, int * c, int byte)
+{
     for(int i = 0; i < k; i++)
         c[i] = 0;
     for(int i = 0; i < n; i++)
         c[str[i][byte]]++;
     int sum = 0;
-    for(int i = 0; i < k; i++){
+    for(int i = 0; i < k; i++)
+    {
         int tmp = c[i];
         c[i] = sum;
         sum += tmp;
     }
     string * b = new string[n];
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n; i++)
+    {
         b[c[str[i][byte]]++] = str[i];
     }
     for(int i = 0; i < n; i++)
@@ -22,7 +31,8 @@ void countingSort(string * str, int n, int * c, int byte){
     delete[] b;
 }
 
-void MSDSort(string * str, int n, int byte){
+void MSDSort(string * str, int n, int byte)
+{
     if(n <= 1)
         return;
     int * c = new int[k + 1];
