@@ -156,30 +156,30 @@ int main()
     {
         return 0;
     }
-    User *a = new User[N];
+    //creating an array of 1 element and using it to fill the heap
+    User *a = new User[1];
+    Heap<User> *pudge = new Heap<User>();
     for (int i = 0; i < N; i++)
     {
-        std::cin >> a[i].id >> a[i].activity;
-    }
-
-    Heap<User> *pudge = new Heap<User>();
-
-    for(int i = 0; i < N; i++)
-    {
-        if (i >= K)
+        std::cin >> a[1].id >> a[1].activity;
         {
-            pudge->Add(a[i]);
-            pudge->Extract();
-        } 
-        else
-        {
-            pudge->Add(a[i]);
+            if (i >= K)
+            {
+                pudge->Add(a[1]);
+                pudge->Extract();
+            } 
+            else
+            {
+                pudge->Add(a[1]);
+            }
         }
     }
+    //determining how many elements there are
     if (K < N)
     {
         N = K;
     }
+    //output
     for (int i = 0; i < N; i++)
     {
         std::cout << pudge->Peek().id << " ";
