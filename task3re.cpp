@@ -11,7 +11,7 @@ private:
     int capacity;
     int begin;
 public:
-    Stack();
+    Stack(int len);
     ~Stack();
     int current;
     void Grow();
@@ -22,20 +22,19 @@ public:
 
 void Stack::Printer()
 {
-    std::cout << "capacity = " << capacity << " begin = " << begin << " current " << current << std::endl;
+    std::cout << "capacity = " << capacity << " current " << current << std::endl;
     for (int i = 0; i < current; i++)
     {
-        std::cout << ptr[i] << " ";
+        std::cout << "ptr[" << i << "] = " << ptr[i] << " ";
     }
     std::cout << std::endl;
 }
 
-Stack::Stack()
+Stack::Stack(int len)
 {
-    ptr = new int[16];
+    ptr = new int[len];
     current = 0;
-    capacity = 16;
-    begin = 0;
+    capacity = len;
 }
 
 Stack::~Stack()
@@ -49,7 +48,7 @@ void Stack::Push(int value)
     {
         Grow();
     }
-    ptr[(begin + current) % capacity] = value;
+    ptr[current] = value;
     current++;
 }
 
@@ -70,7 +69,7 @@ int Stack::Pop()
         return -1;
     }
     current--;
-    return ptr[begin + current];
+    return ptr[current];
 }
 
 class Queue
@@ -83,7 +82,7 @@ public:
     int Dequeue();
     void Flip();
 
-    Queue();
+    Queue(int len);
     ~Queue();
     void Printer();
 };
@@ -96,10 +95,10 @@ void Queue::Printer()
     output->Printer();
 }
 
-Queue::Queue()
+Queue::Queue(int len)
 {
-    input = new Stack();
-    output = new Stack();
+    input = new Stack(len);
+    output = new Stack(len);
 }
 
 Queue::~Queue()
@@ -115,14 +114,10 @@ void Queue::Enqueue(int data)
 
 int Queue::Dequeue()
 {
-    //std::cout << "Dequeue: output->current = " << output->current << std::endl;
-    //std::cout << "Dequeue: input->current = " << input->current << std::endl;
     if (output->current == 0)
     {
         Flip();
     }
-    //std::cout << "Dequeue: output->current = " << output->current << std::endl;
-    //std::cout << "Dequeue: input->current = " << input->current << std::endl;
     return output->Pop();
 }
 
@@ -137,9 +132,9 @@ void Queue::Flip()
 
 int main()
 {
-    Queue za_chlenami;
     int n, deq = 0;
     std::cin >> n;
+    Queue myqueue(n);
     int a,b = 0;
     bool yes = true;
     for (int i = 0; i < n; i++)
@@ -147,16 +142,13 @@ int main()
         std::cin >> a >> b;
         if (a == 3)
         {
-            za_chlenami.Enqueue(b);
-            za_chlenami.Printer();
+            myqueue.Enqueue(b);
         }
         else if (a == 2)
         {
-            deq = za_chlenami.Dequeue();
-            //if (za_chlenami.Dequeue() != b)
+            deq = myqueue.Dequeue();
             if (deq != b)
             {
-                std::cout << deq << " != " << b << std::endl;
                 yes = false;
             }
         }
