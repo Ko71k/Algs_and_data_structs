@@ -37,7 +37,6 @@ Stack::~Stack()
     {
         Pop();
     }
-    
 }
 
 bool Stack::IsEmpty()
