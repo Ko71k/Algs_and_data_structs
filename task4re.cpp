@@ -28,7 +28,7 @@ bool operator>(const User &left, const User &right)
 {
     return left.activity > right.activity;
 }
-
+//Default comparator
 template <class T>
 struct DefComp
 {
@@ -37,11 +37,12 @@ struct DefComp
         return l > r;
     }
 };
-
+//Template class heap
 template <class T, class Comp=DefComp<T>>
 class Heap
 {
 public:
+    //Constructor
     Heap(Comp comp=Comp())
     {
         buffer = new T[3];
@@ -49,30 +50,18 @@ public:
         capacity = 3;
         this->comp = comp;
     }
-    
-    Heap(T* arr, int size, Comp comp=Comp())
-    {
-        this->comp = comp;
-        buffer = new T[size];
-        for (int i = 0; i < size; i++)
-        {
-            buffer[i] = arr[i];
-        }
-        current_size = size;
-        capacity = size;
-        heapify();
-    }
-
+    //Destructor
     ~Heap()
     {
         delete[] buffer;
     }
-
+    //Function to get the top element
     const T& Peek() const 
     {
         return buffer[0];
     }
-    void ExtractTop()
+    //Function to extract top element
+    void Extract()
     {
         if (current_size <= 0)
         {
@@ -82,7 +71,7 @@ public:
         buffer[0] = buffer[current_size];
         heapify();
     }
-
+    //Function to add an element
     void Add(const T& value)
     {
         current_size++;
@@ -132,6 +121,7 @@ private:
             sift_down(largest);
         }
     }
+    //restores the heap
     void heapify()
     {
         if (current_size == 0 || current_size == 1) 
@@ -142,7 +132,8 @@ private:
         {
             sift_down(i);
         }
-        }
+    }
+    //Function to dynamically allocate memory
     void grow()
     {
         capacity *= 2;
@@ -159,6 +150,7 @@ private:
 int main() 
 {
     int N, K;
+    //input N, K
     std::cin >> N >> K;
     if (N == 0 || K == 0)
     {
@@ -177,7 +169,7 @@ int main()
         if (i >= K)
         {
             pudge->Add(a[i]);
-            pudge->ExtractTop();
+            pudge->Extract();
         } 
         else
         {
@@ -191,7 +183,7 @@ int main()
     for (int i = 0; i < N; i++)
     {
         std::cout << pudge->Peek().id << " ";
-        pudge->ExtractTop();
+        pudge->Extract();
     }
     return 0;
 }
